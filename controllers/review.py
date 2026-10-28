@@ -26,7 +26,7 @@ def product(product_id):
     )
 
 
-@main.route('/add/<product_id>', methods=['GET', 'POST'])
+@main.route('/reviews/add/<product_id>', methods=['GET', 'POST'])
 def add(product_id):
     login_redirect = require_login()
     if login_redirect:

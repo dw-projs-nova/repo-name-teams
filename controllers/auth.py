@@ -18,7 +18,7 @@ from flask import (
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
 from controllers.mail import send_smtp_message
-from controllers.shared import main, require_login
+from controllers.shared import main, require_login, logged_in
 from models import LoginToken, Review, User, db
 
 
@@ -60,13 +60,16 @@ def send_login_email(user):
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
+    logged_in_redirect = logged_in()
+    if logged_in_redirect:
+        return logged_in_redirect
     if request.method == 'POST':
         next_url = request.form.get('next')
         if next_url and next_url.startswith('/'):
             session['login_next'] = next_url
         email = request.form.get('email', '').strip().lower()
         if '@' not in email or len(email) > 320:
-            return render_template('account/login.html', error='Enter a valid email address.'), 400
+            return render_template('account/auth/login.html', error='Enter a valid email address.'), 400
 
         user = User.query.filter_by(email=email).first()
         expected_role = 'admin' if email == current_app.config['ADMIN_EMAIL'] else 'user'
@@ -81,9 +84,9 @@ def login():
             send_login_email(user)
         except (OSError, SMTPException) as exc:
             current_app.logger.exception('Could not send sign-in email')
-            return render_template('account/login.html', error=f'Could not send email: {exc}'), 502
-        return render_template('account/login.html', message='Check your email for a secure sign-in link.')
-    return render_template('account/login.html')
+            return render_template('account/auth/login.html', error=f'Could not send email: {exc}'), 502
+        return render_template('account/auth/login.html', message='Check your email for a secure sign-in link.')
+    return render_template('account/auth/login.html')
 
 
 def load_login_token(token):
@@ -114,7 +117,7 @@ def load_login_token(token):
 def verify_login(token):
     record, user = load_login_token(token)
     if request.method == 'GET':
-        response = make_response(render_template('account/verify_login.html'))
+        response = make_response(render_template('account/auth/verify_login.html'))
         response.headers['Cache-Control'] = 'no-store'
         return response
 

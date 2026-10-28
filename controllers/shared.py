@@ -52,6 +52,10 @@ def require_login():
         return redirect(url_for('main.login', next=request.full_path))
     return None
 
+def logged_in():
+    if g.get('current_user') is not None:
+        return redirect(url_for('main.index'))
+
 
 def can_edit(review):
     user = g.get('current_user')

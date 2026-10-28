@@ -1,125 +1,164 @@
-{% extends "base.html" %}
-
-{% block title %}Reviews{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Reviews{% endblock %} {% block
+content %}
 <main class="container py-4">
-    <section class="card mb-4">
-        <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
-            <div>
-                <span class="badge bg-secondary mb-2">Customer reviews</span>
-                <h2 class="mb-1">{{ product.name }}</h2>
-                <p class="text-muted mb-0">{{ product.description }}</p>
-                {% if review_average is not none %}
-                    <div class="d-flex align-items-center gap-2 mt-3" aria-label="Average rating: {{ review_average }} out of 5 from {{ review_count }} reviews">
-                        <strong class="fs-5">{{ '%.1f'|format(review_average) }}</strong>
-                        <span class="text-warning" aria-hidden="true">★</span>
-                        <span class="text-muted">from {{ review_count }} review{{ '' if review_count == 1 else 's' }}</span>
-                    </div>
-                {% else %}
-                    <p class="text-muted mt-3 mb-0">No ratings yet</p>
-                {% endif %}
+  <section class="card mb-4">
+    <div
+      class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3"
+    >
+      <div>
+        <span class="badge bg-secondary mb-2">Customer reviews</span>
+        <h2 class="mb-1">{{ product.name }}</h2>
+        <p class="text-muted mb-0">{{ product.description }}</p>
+        {% if review_average is not none %}
+        <div
+          class="d-flex align-items-center gap-2 mt-3"
+          aria-label="Average rating: {{ review_average }} out of 5 from {{ review_count }} reviews"
+        >
+          <strong class="fs-5">{{ '%.1f'|format(review_average) }}</strong>
+          <span class="text-warning rating star-icon value-{{ review_average|round(0) }}" aria-hidden="true">
+            {% for _ in range(1) %}
+            <div class="star icon">
+              <i class="star-empty"></i>
+              <i class="star-half"></i>
+              <i class="star-filled"></i>
             </div>
-            {% if user_review %}
-                <a class="btn btn-primary" href="{{ url_for('main.edit_review', review_id=user_review.id) }}">Edit my review</a>
-            {% else %}
-                <a class="btn btn-primary" href="{{ url_for('main.add', product_id=product_id) }}">Add a review</a>
-            {% endif %}
-        </div>
-    </section>
-    {% if reviews %}
-        <div class="row">
-            {% for review in reviews %}
-                <article id="review-{{ review.id }}" class="col-12 mb-3 review-entry">
-                    <div class="card review-card">
-                        <div class="card-body">
-                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
-                                <h3 class="card-title mb-0">{{ review.title }}</h3>
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="rating star-icon value-{{ review.rating }} mb-0"
-                                         role="img" aria-label="Rating: {{ review.rating }} out of 5">
-                                        <div class="star-container" aria-hidden="true">
-                                            {% for _ in range(5) %}
-                                                <div class="star icon">
-                                                    <i class="star-empty"></i>
-                                                    <i class="star-half"></i>
-                                                    <i class="star-filled"></i>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                    <span class="text-muted">{{ review.rating }}/5</span>
-                                </div>
-                            </div>
-                            <p class="mb-3">{{ review.content }}</p>
-                            <footer class="d-flex flex-wrap justify-content-between align-items-center gap-2 text-muted">
-                                <div>
-                                    <span>Reviewed by <strong>{{ review.reviewer_name }}</strong></span>
-                                    <span aria-hidden="true"> · </span>
-                                    <time datetime="{{ review.created_at.isoformat() }}">
-                                        {{ review.created_at.strftime('%b %d, %Y') }}
-                                    </time>
-                                </div>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-outline-secondary review-share"
-                                            type="button"
-                                            data-url="{{ url_for('main.product', product_id=product_id, _external=True) }}#review-{{ review.id }}"
-                                            data-title="{{ review.title|e }}"
-                                            aria-label="Share review: {{ review.title|e }}">
-                                        <i class="fa fa-share-alt me-1" aria-hidden="true"></i><span>Share</span>
-                                    </button>
-                                    {% if current_user and (current_user.role == 'admin' or review.user_id == current_user.id) %}
-                                        <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('main.edit_review', review_id=review.id) }}">Edit</a>
-                                    {% endif %}
-                                </div>
-                            </footer>
-                        </div>
-                    </div>
-                </article>
             {% endfor %}
+          </span>
+          <span class="text-muted"
+            >from {{ review_count }} review{{ '' if review_count == 1 else 's'
+            }}</span
+          >
         </div>
-    {% else %}
-        <p>No reviews for {{ product.name }} yet. Be the first to add one!!</p>
-    {% endif %}
+        {% else %}
+        <p class="text-muted mt-3 mb-0">No ratings yet</p>
+        {% endif %}
+      </div>
+      {% if user_review %}
+      <a
+        class="btn btn-primary"
+        href="{{ url_for('main.edit_review', review_id=user_review.id) }}"
+        >Edit my review</a
+      >
+      {% else %}
+      <a
+        class="btn btn-primary"
+        href="{{ url_for('main.add', product_id=product_id) }}"
+        >Add a review</a
+      >
+      {% endif %}
+    </div>
+  </section>
+  {% if reviews %}
+  <div class="row">
+    {% for review in reviews %}
+    <article id="review-{{ review.id }}" class="col-12 mb-3 review-entry">
+      <div class="card review-card">
+        <div class="card-body">
+          <div
+            class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3"
+          >
+            <h3 class="card-title mb-0">{{ review.title }}</h3>
+            <div class="d-flex align-items-center gap-2">
+              <div
+                class="rating star-icon value-{{ review.rating }} mb-0"
+                role="img"
+                aria-label="Rating: {{ review.rating }} out of 5"
+              >
+                <div class="star-container" aria-hidden="true">
+                  {% for _ in range(5) %}
+                  <div class="star icon">
+                    <i class="star-empty"></i>
+                    <i class="star-half"></i>
+                    <i class="star-filled"></i>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <span class="text-muted">{{ review.rating }}/5</span>
+            </div>
+          </div>
+          <p class="mb-3">{{ review.content }}</p>
+          <footer
+            class="d-flex flex-wrap justify-content-between align-items-center gap-2 text-muted"
+          >
+            <div>
+              <span
+                >Reviewed by <strong>{{ review.reviewer_name }}</strong></span
+              >
+              <span aria-hidden="true"> · </span>
+              <time datetime="{{ review.created_at.isoformat() }}">
+                {{ review.created_at.strftime('%b %d, %Y') }}
+              </time>
+            </div>
+            <div class="d-flex gap-2">
+              <button
+                class="btn btn-sm btn-outline-secondary review-share"
+                type="button"
+                data-url="{{ url_for('main.product', product_id=product_id, _external=True) }}#review-{{ review.id }}"
+                data-title="{{ review.title|e }}"
+                aria-label="Share review: {{ review.title|e }}"
+              >
+                <i class="fa fa-share-alt me-1" aria-hidden="true"></i
+                ><span>Share</span>
+              </button>
+              {# This should be can_edit but oh well! I don't want to bother
+              with importing its guard so good ideas aren't in the budget #} {%
+              if current_user and (current_user.role == 'admin' or
+              review.user_id == current_user.id) %}
+              <a
+                class="btn btn-sm btn-outline-secondary"
+                href="{{ url_for('main.edit_review', review_id=review.id) }}"
+                >Edit</a
+              >
+              {% endif %}
+            </div>
+          </footer>
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>No reviews for {{ product.name }} yet. Be the first to add one!!</p>
+  {% endif %}
 </main>
-{% endblock %}
-
-{% block scripts %}
-{{ super() }}
+{% endblock %} {% block scripts %} {{ super() }}
 <script>
-    document.querySelectorAll('.review-share').forEach(function (button) {
-        button.addEventListener('click', async function () {
-            const shareData = {
-                title: button.dataset.title,
-                text: 'Read this review:',
-                url: button.dataset.url,
-            };
+  document.querySelectorAll(".review-share").forEach(function (button) {
+    button.addEventListener("click", async function () {
+      const shareData = {
+        title: button.dataset.title,
+        text: "Read this review:",
+        url: button.dataset.url,
+      };
 
-            try {
-                if (navigator.share) {
-                    await navigator.share(shareData);
-                    return;
-                }
-
-                await navigator.clipboard.writeText(shareData.url);
-                const label = button.querySelector('span');
-                label.textContent = 'Copied';
-                setTimeout(function () { label.textContent = 'Share'; }, 1800);
-            } catch (error) {
-                if (error.name !== 'AbortError') {
-                    window.prompt('Copy this review link:', shareData.url);
-                }
-            }
-        });
-    });
-
-    if (window.location.hash.startsWith('#review-')) {
-        const sharedReview = document.querySelector(window.location.hash);
-        if (sharedReview) {
-            requestAnimationFrame(function () {
-                sharedReview.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            });
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+          return;
         }
+
+        await navigator.clipboard.writeText(shareData.url);
+        const label = button.querySelector("span");
+        label.textContent = "Copied";
+        setTimeout(function () {
+          label.textContent = "Share";
+        }, 1800);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          window.prompt("Copy this review link:", shareData.url);
+        }
+      }
+    });
+  });
+
+  if (window.location.hash.startsWith("#review-")) {
+    const sharedReview = document.querySelector(window.location.hash);
+    if (sharedReview) {
+      requestAnimationFrame(function () {
+        sharedReview.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
     }
+  }
 </script>
 {% endblock %}

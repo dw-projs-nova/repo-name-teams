@@ -1,3 +1,4 @@
+{# in my own apps, some e-mail clients will pre-click a link to get info about it, this page basically has user click a button to validate their sign-in, which it then deletes immediately #}
 {% extends "base.html" %}
 
 {% block title %}Confirm sign in{% endblock %}
@@ -12,6 +13,7 @@
                     <p class="text-muted">This link can be used only once.</p>
                     <form method="post">
                         <button class="btn btn-primary w-100" type="submit">Sign in to Review App</button>
+                        {# in a production app, you would not hardcode the app name, but this is supposed to be simple so who cares? #}
                     </form>
                 </div>
             </div>
