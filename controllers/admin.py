@@ -1,7 +1,7 @@
 from flask import abort, render_template, request
 
-from controllers_mail import send_review_approved_email
-from controllers_shared import main, require_admin
+from controllers.mail import send_review_approved_email
+from controllers.shared import PRODUCTS, main, require_admin
 from models import Review, db
 
 
@@ -53,5 +53,6 @@ def admin_reviews():
         reviews=reviews,
         status=status,
         counts=counts,
+        product_names={product_id: product['name'] for product_id, product in PRODUCTS.items()},
         message=message,
     )

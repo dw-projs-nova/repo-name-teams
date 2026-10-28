@@ -210,5 +210,19 @@
     font-size: 1.5rem;
 }
 
-.admin-empty-state {    border-style: dashed;
+.review-entry {
+    scroll-margin-top: 1.5rem;
+}
+
+.review-card {
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.review-entry:target .review-card {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16), 0 0.75rem 2rem rgba(33, 37, 41, 0.12);
+}
+
+.admin-empty-state {
+    border-style: dashed;
 }

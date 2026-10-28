@@ -3,7 +3,7 @@ from smtplib import SMTP, SMTP_SSL
 
 from flask import current_app, render_template, url_for
 
-from controllers_shared import get_product
+from controllers.shared import get_product
 
 
 def send_smtp_message(message):

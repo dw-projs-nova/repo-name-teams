@@ -49,6 +49,7 @@ with app.app_context():
         "ON reviews(user_id, product_id) WHERE user_id IS NOT NULL"
     ))
 
+    # I could not be bothered to write these, AI generated the examples with Gemini.
     examples = {
         'cloudstep': [
             ('Maya Chen', 'Comfortable from the first mile', 'Cloudstep shoes have soft cushioning and feel light on long neighborhood runs.', 5),

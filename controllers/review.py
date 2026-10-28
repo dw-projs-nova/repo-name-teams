@@ -1,7 +1,7 @@
 from flask import abort, g, redirect, render_template, request, url_for
 from sqlalchemy.exc import IntegrityError
 
-from controllers_shared import can_edit, get_product, main, require_login
+from controllers.shared import can_edit, get_product, main, require_login
 from models import Review, db
 
 
@@ -14,7 +14,16 @@ def index():
 def product(product_id):
     product = get_product(product_id)
     reviews = Review.query.filter_by(product_id=product_id, approved=True).order_by(Review.created_at.desc()).all()
-    return render_template('index.html', product_id=product_id, product=product, reviews=reviews)
+    review_count = len(reviews)
+    review_average = round(sum(review.rating for review in reviews) / review_count, 1) if review_count else None
+    return render_template(
+        'index.html',
+        product_id=product_id,
+        product=product,
+        reviews=reviews,
+        review_count=review_count,
+        review_average=review_average,
+    )
 
 
 @main.route('/add/<product_id>', methods=['GET', 'POST'])

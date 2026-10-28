@@ -36,7 +36,7 @@
                                     {% else %}
                                         <span class="badge bg-warning text-dark">Pending</span>
                                     {% endif %}
-                                    <strong>{{ review.product_id }}</strong>
+                                    <strong>{{ product_names[review.product_id] }}</strong>
                                     <span class="text-muted">· {{ review.rating }}/5</span>
                                 </div>
                                 <h3 class="h5 mb-2">{{ review.title }}</h3>

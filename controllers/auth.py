@@ -17,8 +17,8 @@ from flask import (
 )
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
-from controllers_mail import send_smtp_message
-from controllers_shared import main, require_login
+from controllers.mail import send_smtp_message
+from controllers.shared import main, require_login
 from models import LoginToken, Review, User, db
 
 

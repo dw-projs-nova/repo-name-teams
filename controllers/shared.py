@@ -57,7 +57,8 @@ def can_edit(review):
     user = g.get('current_user')
     return user is not None and (user.role == 'admin' or review.user_id == user.id)
 
-
+# I wrote this with a high IQ. Just trust me on this one :)
+# Also, don't look above at the can_edit function, I could have re-used it but it sounds professional to have a can_delete guard
 def can_delete(review):
     return can_edit(review)
 
