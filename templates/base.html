@@ -15,25 +15,88 @@
 
         <!-- font awesome  4.7.0 -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        {% block head_extra %}{% endblock %}
     </head>
     <body>
+        {% block navigation %}
         <nav class="navbar navbar-expand-lg site-navbar" aria-label="Main navigation">
-            <div class="container-fluid">
+            <div class="container-fluid site-navbar-inner">
                 <h1 class="site-brand-heading"><a class="navbar-brand" href="{{ url_for('main.index') }}">Review App</a></h1>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#main-navigation" aria-controls="main-navigation"
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="main-navigation">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link{% if request.endpoint == 'main.index' %} active{% endif %}" {% if request.endpoint == 'main.index' %}aria-current="page"{% endif %} href="{{ url_for('main.index') }}">Home</a></li>
-                        <li class="nav-item"><a class="nav-link{% if request.endpoint == 'main.add' %} active{% endif %}" {% if request.endpoint == 'main.add' %}aria-current="page"{% endif %} href="{{ url_for('main.add') }}">Add a review</a></li>
+
+                <div class="collapse navbar-collapse site-nav-collapse" id="main-navigation">
+                    <ul class="navbar-nav site-nav-links">
+                        <li class="nav-item"><a class="nav-link{% if product_id == 'cloudstep' %} active{% endif %}" {% if product_id == 'cloudstep' %}aria-current="page"{% endif %} href="{{ url_for('main.product', product_id='cloudstep') }}">Running Shoes</a></li>
+                        <li class="nav-item"><a class="nav-link{% if product_id == 'trailbound' %} active{% endif %}" {% if product_id == 'trailbound' %}aria-current="page"{% endif %} href="{{ url_for('main.product', product_id='trailbound') }}">Hiking Boots</a></li>
+                        {% if product_id %}
+                            <li class="nav-item">
+                                {% if user_review %}
+                                    <a class="nav-link" href="{{ url_for('main.edit_review', review_id=user_review.id) }}">Edit my review</a>
+                                {% else %}
+                                    <a class="nav-link" href="{{ url_for('main.add', product_id=product_id) }}">Add a review</a>
+                                {% endif %}
+                            </li>
+                        {% endif %}
+                        {% if current_user and current_user.role == 'admin' %}
+                            <li class="nav-item d-lg-none"><a class="nav-link{% if request.endpoint == 'main.admin_reviews' %} active{% endif %}" href="{{ url_for('main.admin_reviews') }}">Manage reviews</a></li>
+                        {% endif %}
+                        {% if current_user %}
+                            <li class="nav-item d-lg-none"><a class="nav-link" href="{{ url_for('main.account') }}">Account &amp; reviews</a></li>
+                            <li class="nav-item d-lg-none">
+                                <form method="post" action="{{ url_for('main.logout') }}">
+                                    <button class="nav-link border-0 bg-transparent" type="submit">Sign out</button>
+                                </form>
+                            </li>
+                        {% else %}
+                            <li class="nav-item d-lg-none"><a class="nav-link" href="{{ url_for('main.login') }}">Sign in</a></li>
+                        {% endif %}
                     </ul>
                 </div>
+
+                {% if current_user %}
+                    <div class="dropdown d-none d-lg-block site-account">
+                        <button class="nav-account dropdown-toggle d-flex align-items-center gap-2"
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="account-avatar" aria-hidden="true">{{ current_user.display_name[:1]|upper }}</span>
+                            <span class="account-name">
+                                {{ current_user.display_name }}
+                                {% if current_user.role == 'admin' %}<small class="account-role">Admin</small>{% endif %}
+                            </span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end account-menu">
+                            <div class="account-menu-header">
+                                <strong>{{ current_user.display_name }}</strong>
+                                <small>{{ current_user.email }}</small>
+                            </div>
+                            <a class="dropdown-item" href="{{ url_for('main.account') }}">
+                                <i class="fa fa-user-o me-2" aria-hidden="true"></i>Account &amp; reviews
+                            </a>
+                            {% if current_user.role == 'admin' %}
+                                <a class="dropdown-item{% if request.endpoint == 'main.admin_reviews' %} active{% endif %}" href="{{ url_for('main.admin_reviews') }}">
+                                    <i class="fa fa-check-square-o me-2" aria-hidden="true"></i>Manage reviews
+                                </a>
+                            {% endif %}
+                            <div class="dropdown-divider"></div>
+                            <form method="post" action="{{ url_for('main.logout') }}">
+                                <button class="dropdown-item text-danger" type="submit">
+                                    <i class="fa fa-sign-out me-2" aria-hidden="true"></i>Sign out
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <a class="btn btn-outline-primary d-none d-lg-inline-flex site-sign-in" href="{{ url_for('main.login') }}">Sign in</a>
+                {% endif %}
             </div>
         </nav>
+        {% endblock %}
         {% block content %}{% endblock %}
+        {% block scripts %}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha256-CDOy6cOibCWEdsRiZuaHf8dSGGJRYuBGC+mjoJimHGw=" crossorigin="anonymous"></script>
+        {% endblock %}
     </body>
 </html>

@@ -1,0 +1,85 @@
+{% extends "base.html" %} {% block title %}My account{% endblock %} {% block
+content %}
+<main class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">My account</h2>
+      <p class="text-muted mb-0">
+        {{ current_user.email }} · {{ current_user.role }}
+      </p>
+    </div>
+  </div>
+
+  {% if error %}
+  <p class="alert alert-danger" role="alert">{{ error }}</p>
+  {% endif %} {% if message %}
+  <p class="alert alert-success" role="status">{{ message }}</p>
+  {% endif %}
+
+  <section class="card mb-4">
+    <div class="card-body">
+      <h3 class="card-title h5">Profile settings</h3>
+      <form method="post" class="row g-3 align-items-end">
+        <div class="col-md-8">
+          <label class="form-label" for="display_name">Display name</label>
+          <input
+            class="form-control"
+            id="display_name"
+            name="display_name"
+            maxlength="120"
+            value="{{ current_user.display_name }}"
+            required
+          />
+        </div>
+        <div class="col-md-4">
+          <button class="btn btn-primary w-100" type="submit">
+            Save display name
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <h3 class="h5 mb-3">My reviews</h3>
+  {% if reviews %} {% for review in reviews %}
+  <article class="card mb-3">
+    <div class="card-body">
+      <div class="d-flex justify-content-between gap-3 align-items-start">
+        <div>
+          <h4 class="h6 mb-1">{{ review.title }}</h4>
+          <p class="text-muted mb-2">
+            {{ review.rating }}/5 · {{ review.product_id }} · {% if
+            review.approved %}<span class="badge bg-success">Approved</span>{%
+            else %}<span class="badge bg-warning text-dark"
+              >Pending approval</span
+            >{% endif %}
+          </p>
+        </div>
+        <div class="d-flex flex-column gap-1">
+          <a
+            class="btn btn-sm btn-outline-primary"
+            href="{{ url_for('main.edit_review', review_id=review.id) }}"
+            >Edit</a
+          >
+          <form
+            method="post"
+            action="{{ url_for('main.delete_review', review_id=review.id) }}"
+          >
+            <button
+              class="btn btn-sm btn-outline-danger w-100"
+              type="submit"
+              onclick="return confirm('Delete this review permanently?');"
+            >
+              Delete
+            </button>
+          </form>
+        </div>
+      </div>
+      <p class="mb-0">{{ review.content }}</p>
+    </div>
+  </article>
+  {% endfor %} {% else %}
+  <p>You have not written a review yet.</p>
+  {% endif %}
+</main>
+{% endblock %}

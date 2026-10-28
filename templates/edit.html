@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Edit review{% endblock %}
+
+{% block content %}
+<main class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Edit your review</h2>
+                    {% if error %}<p class="alert alert-danger" role="alert">{{ error }}</p>{% endif %}
+                    <form method="post">
+                        <div class="form-floating mb-3">
+                            <input class="form-control" id="title" name="title" type="text" maxlength="200" value="{{ review.title }}" required>
+                            <label for="title">Review title</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" id="content" name="content" style="height: 10rem" required maxlength="1000">{{ review.content }}</textarea>
+                            <label for="content">Write your review</label>
+                        </div>
+                        <fieldset class="mb-4">
+                            <legend class="form-label fs-6">Your rating</legend>
+                            <div class="rating-options">
+                                {% for value in range(5, 0, -1) %}
+                                    <input class="rating-choice visually-hidden" id="rating-{{ value }}" name="rating" type="radio" value="{{ value }}" {% if review.rating == value %}checked{% endif %} required>
+                                    <label class="rating-star" for="rating-{{ value }}">
+                                        <span class="star icon" aria-hidden="true"><i class="star-empty"></i><i class="star-filled"></i></span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        </fieldset>
+                        <button class="btn btn-primary" type="submit">Save changes</button>
+                        <a class="btn btn-outline-secondary" href="{{ url_for('main.product', product_id=review.product_id) }}">Cancel</a>
+                    </form>
+                    <hr>
+                    <form method="post" action="{{ url_for('main.delete_review', review_id=review.id) }}">
+                        <button class="btn btn-outline-danger" type="submit"
+                                onclick="return confirm('Delete this review permanently?');">
+                            Delete review
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

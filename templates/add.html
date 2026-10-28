@@ -8,19 +8,15 @@
         <div class="col-12 col-lg-8">
             <div class="card">
                 <div class="card-body">
+                    <span class="badge bg-secondary mb-2">{{ product.name }}</span>
                     <h2 class="card-title mb-4">Add a review</h2>
                     {% if error %}
                         <p class="alert alert-danger" role="alert">{{ error }}</p>
                     {% endif %}
+                    <p class="alert alert-info" role="note">
+                        Reviews are published only after an administrator approves them.
+                    </p>
                     <form method="post">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" aria-hidden="true"><i class="fa fa-user"></i></span>
-                            <div class="form-floating">
-                                <input class="form-control" id="reviewer_name" name="reviewer_name" type="text" maxlength="120" placeholder="Your name" required>
-                                <label for="reviewer_name">Your name</label>
-                            </div>
-                        </div>
-
                         <div class="form-floating mb-3">
                             <input class="form-control" id="title" name="title" type="text" maxlength="200" placeholder="Review title" required>
                             <label for="title">Review title</label>

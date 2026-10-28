@@ -37,3 +37,178 @@
     outline: 2px solid currentColor;
     outline-offset: 2px;
 }
+
+.site-navbar {
+    min-height: 4.25rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+@media (min-width: 992px) {
+    .site-navbar-inner {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        align-items: center;
+    }
+
+    .site-navbar-inner > .site-brand-heading {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .site-nav-collapse {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .site-nav-links {
+        flex-wrap: nowrap;
+    }
+
+    .site-account,
+    .site-sign-in {
+        grid-column: 3;
+        grid-row: 1;
+        justify-self: end;
+    }
+}
+
+.nav-account {
+    min-width: 0;
+    padding: 0.35rem 0.5rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+}
+
+.nav-account:hover,
+.nav-account[aria-expanded="true"] {
+    background: rgba(37, 99, 235, 0.08);
+}
+
+.account-avatar {
+    display: inline-grid;
+    width: 2.15rem;
+    height: 2.15rem;
+    flex: 0 0 2.15rem;
+    place-items: center;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 700;
+}
+
+.account-name {
+    max-width: 11rem;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.account-role {
+    display: block;
+    color: #6c757d;
+    font-size: 0.72rem;
+    line-height: 1;
+}
+
+.account-menu {
+    min-width: 16rem;
+    padding: 0.45rem;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 0.75rem 2rem rgba(33, 37, 41, 0.14);
+}
+
+.account-menu-header {
+    display: flex;
+    flex-direction: column;
+    max-width: 15rem;
+    padding: 0.6rem 0.75rem 0.8rem;
+}
+
+.account-menu-header small {
+    overflow: hidden;
+    color: #6c757d;
+    text-overflow: ellipsis;
+}
+
+.account-menu .dropdown-item {
+    border-radius: 0.35rem;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 0.35rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.admin-tab {
+    display: inline-flex;
+    gap: 0.45rem;
+    align-items: center;
+    padding: 0.65rem 0.85rem;
+    border-bottom: 2px solid transparent;
+    color: #495057;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.admin-tab:hover,
+.admin-tab.active {
+    border-bottom-color: #2563eb;
+    color: #2563eb;
+}
+
+.admin-tab span {
+    min-width: 1.4rem;
+    padding: 0.1rem 0.35rem;
+    border-radius: 1rem;
+    background: #e9ecef;
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+.admin-review-card {
+    margin-bottom: 0.75rem;
+}
+
+.admin-review-card .min-w-0 {
+    min-width: 0;
+    flex: 1 1 28rem;
+}
+
+.admin-review-actions {
+    display: flex;
+    min-width: 10rem;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.admin-review-actions form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.35rem;
+}
+
+.submission-confirmation {
+    border: 0;
+    box-shadow: 0 0.75rem 2.25rem rgba(33, 37, 41, 0.12);
+}
+
+.submission-icon {
+    display: inline-grid;
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 1.25rem;
+    place-items: center;
+    border-radius: 50%;
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 1.5rem;
+}
+
+.admin-empty-state {    border-style: dashed;
+}

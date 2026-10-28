@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Review submitted{% endblock %}
+
+{% block content %}
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <section class="card text-center submission-confirmation" aria-live="polite">
+                <div class="card-body p-4 p-md-5">
+                    <div class="submission-icon" aria-hidden="true">
+                        <i class="fa fa-check"></i>
+                    </div>
+                    <h2 class="h3 mb-3">Thank you for your review</h2>
+                    <p class="lead mb-2">Your review of <strong>{{ product.name }}</strong> has been submitted.</p>
+                    <p class="text-muted mb-4">It is now waiting for administrator approval and will appear on the product page once approved.</p>
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+                        <a class="btn btn-primary" href="{{ url_for('main.product', product_id=product_id) }}">View product</a>
+                        <a class="btn btn-outline-secondary" href="{{ url_for('main.account') }}">View my reviews</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -4,10 +4,20 @@
 
 {% block content %}
 <main class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="mb-0">Reviews</h2>
-        <a class="btn btn-primary" href="{{ url_for('main.add') }}">Add a review</a>
-    </div>
+    <section class="card mb-4">
+        <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <span class="badge bg-secondary mb-2">Customer reviews</span>
+                <h2 class="mb-1">{{ product.name }}</h2>
+                <p class="text-muted mb-0">{{ product.description }}</p>
+            </div>
+            {% if user_review %}
+                <a class="btn btn-primary" href="{{ url_for('main.edit_review', review_id=user_review.id) }}">Edit my review</a>
+            {% else %}
+                <a class="btn btn-primary" href="{{ url_for('main.add', product_id=product_id) }}">Add a review</a>
+            {% endif %}
+        </div>
+    </section>
     {% if reviews %}
         <div class="row">
             {% for review in reviews %}
@@ -33,12 +43,17 @@
                                 </div>
                             </div>
                             <p class="mb-3">{{ review.content }}</p>
-                            <footer class="text-muted">
-                                <span>Reviewed by <strong>{{ review.reviewer_name }}</strong></span>
-                                <span aria-hidden="true"> · </span>
-                                <time datetime="{{ review.created_at.isoformat() }}">
-                                    {{ review.created_at.strftime('%b %d, %Y') }}
-                                </time>
+                            <footer class="d-flex flex-wrap justify-content-between align-items-center gap-2 text-muted">
+                                <div>
+                                    <span>Reviewed by <strong>{{ review.reviewer_name }}</strong></span>
+                                    <span aria-hidden="true"> · </span>
+                                    <time datetime="{{ review.created_at.isoformat() }}">
+                                        {{ review.created_at.strftime('%b %d, %Y') }}
+                                    </time>
+                                </div>
+                                {% if current_user and (current_user.role == 'admin' or review.user_id == current_user.id) %}
+                                    <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('main.edit_review', review_id=review.id) }}">Edit</a>
+                                {% endif %}
                             </footer>
                         </div>
                     </div>
@@ -46,7 +61,7 @@
             {% endfor %}
         </div>
     {% else %}
-        <p>No reviews yet. Be the first to add one.</p>
+        <p>No reviews for {{ product.name }} yet. Be the first to add one!!</p>
     {% endif %}
 </main>
 {% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Review administration{% endblock %}
+
+{% block content %}
+<main class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div>
+            <span class="text-uppercase text-muted fw-semibold small">Administration</span>
+            <h2 class="mb-1">Review management</h2>
+            <p class="text-muted mb-0">Approve, reject, edit, or delete customer reviews.</p>
+        </div>
+    </div>
+
+    {% if message %}<p class="alert alert-success" role="status">{{ message }}</p>{% endif %}
+
+    <nav class="admin-tabs mb-3" aria-label="Review status">
+        {% for key, label in [('pending', 'Pending'), ('approved', 'Approved'), ('all', 'All')] %}
+            <a href="{{ url_for('main.admin_reviews', status=key) }}"
+               class="admin-tab{% if status == key %} active{% endif %}">
+                {{ label }} <span>{{ counts[key] }}</span>
+            </a>
+        {% endfor %}
+    </nav>
+
+    {% if reviews %}
+        <div class="admin-review-list">
+            {% for review in reviews %}
+                <article class="card admin-review-card">
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap justify-content-between gap-3">
+                            <div class="min-w-0">
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                    {% if review.approved %}
+                                        <span class="badge bg-success">Approved</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    {% endif %}
+                                    <strong>{{ review.product_id }}</strong>
+                                    <span class="text-muted">· {{ review.rating }}/5</span>
+                                </div>
+                                <h3 class="h5 mb-2">{{ review.title }}</h3>
+                                <p class="mb-3">{{ review.content }}</p>
+                                <small class="text-muted">{{ review.reviewer_name }} · #{{ review.id }}</small>
+                            </div>
+                            <div class="admin-review-actions">
+                                <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('main.edit_review', review_id=review.id) }}">Edit</a>
+                                <form method="post">
+                                    <input type="hidden" name="review_id" value="{{ review.id }}">
+                                    {% if not review.approved %}
+                                        <button class="btn btn-sm btn-success" name="action" value="approve">Approve</button>
+                                    {% else %}
+                                        <button class="btn btn-sm btn-outline-warning" name="action" value="reject">Reject</button>
+                                    {% endif %}
+                                    <button class="btn btn-sm btn-outline-danger" name="action" value="delete"
+                                            onclick="return confirm('Delete this review permanently?');">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card admin-empty-state">
+            <div class="card-body text-center text-muted py-5">
+                No {{ status }} reviews.
+            </div>
+        </div>
+    {% endif %}
+</main>
+{% endblock %}
