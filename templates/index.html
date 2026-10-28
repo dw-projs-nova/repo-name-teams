@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Reviews{% endblock %}
+
+{% block content %}
+<main class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Reviews</h2>
+        <a class="btn btn-primary" href="{{ url_for('main.add') }}">Add a review</a>
+    </div>
+    {% if reviews %}
+        <div class="row">
+            {% for review in reviews %}
+                <article class="col-12 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+                                <h3 class="card-title mb-0">{{ review.title }}</h3>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rating star-icon value-{{ review.rating }} mb-0"
+                                         role="img" aria-label="Rating: {{ review.rating }} out of 5">
+                                        <div class="star-container" aria-hidden="true">
+                                            {% for _ in range(5) %}
+                                                <div class="star icon">
+                                                    <i class="star-empty"></i>
+                                                    <i class="star-half"></i>
+                                                    <i class="star-filled"></i>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <span class="text-muted">{{ review.rating }}/5</span>
+                                </div>
+                            </div>
+                            <p class="mb-3">{{ review.content }}</p>
+                            <footer class="text-muted">
+                                <span>Reviewed by <strong>{{ review.reviewer_name }}</strong></span>
+                                <span aria-hidden="true"> · </span>
+                                <time datetime="{{ review.created_at.isoformat() }}">
+                                    {{ review.created_at.strftime('%b %d, %Y') }}
+                                </time>
+                            </footer>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No reviews yet. Be the first to add one.</p>
+    {% endif %}
+</main>
+{% endblock %}

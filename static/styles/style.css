@@ -1,0 +1,39 @@
+.rating-options {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    width: fit-content;
+}
+
+.rating-star {
+    cursor: pointer;
+    padding: 0 0.1rem;
+}
+
+.rating-star .star {
+    height: 2rem;
+    width: 2rem;
+}
+
+.rating-choice:checked + .rating-star .star-filled,
+.rating-choice:checked ~ .rating-star .star-filled,
+.rating-star:hover .star-filled,
+.rating-star:hover ~ .rating-star .star-filled {
+    opacity: 1;
+}
+
+.rating-choice:checked + .rating-star .star-empty,
+.rating-choice:checked ~ .rating-star .star-empty,
+.rating-star:hover .star-empty,
+.rating-star:hover ~ .rating-star .star-empty {
+    opacity: 0;
+}
+
+.rating-star .star-filled {
+    color: #ffc058;
+}
+
+.rating-choice:focus-visible + .rating-star {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
