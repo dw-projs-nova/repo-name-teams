@@ -8,14 +8,24 @@ content %}
       <div>
         <span class="badge bg-secondary mb-2">Customer reviews</span>
         <h2 class="mb-1">{{ product.name }}</h2>
-        <p class="text-muted mb-0">{{ product.description }}</p>
+        <p class="text-muted mb-0 pb-2">{{ product.excerpt }}</p>
+        <h5 class="display-5">
+          {{ product.price }}<span
+            class="monospace"
+            style="font-size: 1.25rem; margin-left: 0.0725rem"
+            >/usd</span
+          >
+        </h5>
         {% if review_average is not none %}
         <div
           class="d-flex align-items-center gap-2 mt-3"
           aria-label="Average rating: {{ review_average }} out of 5 from {{ review_count }} reviews"
         >
           <strong class="fs-5">{{ '%.1f'|format(review_average) }}</strong>
-          <span class="text-warning rating star-icon value-{{ review_average|round(0) }}" aria-hidden="true">
+          <span
+            class="text-warning rating star-icon value-{{ review_average|round(0) }}"
+            aria-hidden="true"
+          >
             {% for _ in range(1) %}
             <div class="star icon">
               <i class="star-empty"></i>
@@ -33,19 +43,54 @@ content %}
         <p class="text-muted mt-3 mb-0">No ratings yet</p>
         {% endif %}
       </div>
-      {% if user_review %}
-      <a
-        class="btn btn-primary"
-        href="{{ url_for('main.edit_review', review_id=user_review.id) }}"
-        >Edit my review</a
-      >
-      {% else %}
-      <a
-        class="btn btn-primary"
-        href="{{ url_for('main.add', product_id=product_id) }}"
-        >Add a review</a
-      >
-      {% endif %}
+      <div id="carousel-product" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          {% for image in product.images %}
+          <div class="carousel-item {% if loop.first %}active{% endif %}">
+            <img
+              src="{{ url_for('static', filename='images/products/' ~ product_id ~ '/' ~ image) }}"
+              class="d-block w-100"
+              alt="{{ product.name }} image {{ loop.index }}"
+              style="max-height: 200px; object-fit: cover;"
+            />
+          </div>
+          {% endfor %}
+        </div>
+        {% if product.images|length > 1 %}
+        <!-- <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carousel-product"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carousel-product"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button> -->
+        {% endif %}
+      <div>
+        {% if user_review %}
+        <a
+          class="btn btn-primary w-100"
+          href="{{ url_for('main.edit_review', review_id=user_review.id) }}"
+          >Edit my review</a
+        >
+        {% else %}
+        <a
+          class="btn btn-primary w-100"
+          href="{{ url_for('main.add', product_id=product_id) }}"
+          >Add a review</a
+        >
+        {% endif %}
+      </div>
     </div>
   </section>
   {% if reviews %}

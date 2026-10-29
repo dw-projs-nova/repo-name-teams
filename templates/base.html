@@ -3,6 +3,88 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script>
+            (() => {
+                "use strict";
+
+                const getStoredTheme = () => localStorage.getItem("theme");
+                const setStoredTheme = (theme) => localStorage.setItem("theme", theme);
+                const getPreferredTheme = () => {
+                    const storedTheme = getStoredTheme();
+                    if (storedTheme) {
+                        return storedTheme;
+                    }
+
+                    return window.matchMedia("(prefers-color-scheme: dark)").matches
+                        ? "dark"
+                        : "light";
+                };
+                const setTheme = (theme) => {
+                    const resolvedTheme =
+                        theme === "auto"
+                            ? window.matchMedia("(prefers-color-scheme: dark)").matches
+                                ? "dark"
+                                : "light"
+                            : theme;
+                    document.documentElement.setAttribute("data-bs-theme", resolvedTheme);
+                };
+
+                setTheme(getPreferredTheme());
+
+                const showActiveTheme = (theme) => {
+                    const themeSwitcher = document.querySelector("#bd-theme");
+                    if (!themeSwitcher) {
+                        return;
+                    }
+
+                    const themeNames = {
+                        light: "Light",
+                        dark: "Dark",
+                        auto: "System",
+                    };
+                    const themeIcons = {
+                        light: "fa-sun-o",
+                        dark: "fa-moon-o",
+                        auto: "fa-adjust",
+                    };
+
+                    themeSwitcher.querySelectorAll("[data-bs-theme-value]").forEach((button) => {
+                        const isActive = button.dataset.bsThemeValue === theme;
+                        button.classList.toggle("active", isActive);
+                        button.setAttribute("aria-pressed", String(isActive));
+                    });
+                    themeSwitcher.querySelector(".theme-picker-label").textContent = themeNames[theme];
+                    themeSwitcher.querySelector(".theme-picker-current-icon").className =
+                        `fa ${themeIcons[theme]} theme-picker-current-icon`;
+                    themeSwitcher.querySelector(".theme-picker-toggle").setAttribute(
+                        "aria-label",
+                        `Color theme, currently ${themeNames[theme]}`
+                    );
+                };
+
+                window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+                    const storedTheme = getStoredTheme();
+                    if (storedTheme !== "light" && storedTheme !== "dark") {
+                        const theme = getPreferredTheme();
+                        setTheme(theme);
+                        showActiveTheme(theme);
+                    }
+                });
+
+                window.addEventListener("DOMContentLoaded", () => {
+                    showActiveTheme(getPreferredTheme());
+
+                    document.querySelectorAll("[data-bs-theme-value]").forEach((button) => {
+                        button.addEventListener("click", () => {
+                            const theme = button.dataset.bsThemeValue;
+                            setStoredTheme(theme);
+                            setTheme(theme);
+                            showActiveTheme(theme);
+                        });
+                    });
+                });
+            })();
+        </script>
         <title>{% block title %}Review App{% endblock %}</title>
         <!-- Halfmoon CSS -->
         <link href="https://cdn.jsdelivr.net/npm/halfmoon@2.0.2/css/halfmoon.min.css" rel="stylesheet" integrity="sha256-RjeFzczeuZHCyS+Gvz+kleETzBF/o84ZRHukze/yv6o=" crossorigin="anonymous">
@@ -20,8 +102,8 @@
     <body>
         {% block navigation %}
         <nav class="navbar navbar-expand-lg site-navbar" aria-label="Main navigation">
-            <div class="container-fluid site-navbar-inner">
-                <h1 class="site-brand-heading"><a class="navbar-brand" href="{{ url_for('main.index') }}">Review App</a></h1>
+            <div class="container site-navbar-inner">
+                <h1 class="site-brand-heading"><a class="navbar-brand" href="{{ url_for('main.index') }}">Marketplace</a></h1>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#main-navigation" aria-controls="main-navigation"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +139,46 @@
                     </ul>
                 </div>
 
-                {% if current_user %}
+                <div class="site-navbar-actions">
+                    <div class="nav-item dropdown theme-picker" id="bd-theme">
+                        <button class="btn theme-picker-toggle dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false"
+                                aria-label="Color theme">
+                            <i class="fa fa-adjust theme-picker-current-icon" aria-hidden="true"></i>
+                            <span class="theme-picker-label">System</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end theme-picker-menu">
+                            <span class="theme-picker-heading">Appearance</span>
+                            <button class="dropdown-item theme-picker-option" type="button"
+                                    data-bs-theme-value="light" aria-pressed="false">
+                                <i class="fa fa-sun-o theme-picker-option-icon" aria-hidden="true"></i>
+                                <span class="theme-picker-option-copy">
+                                    <strong>Light</strong>
+                                    <small>Bright and clear</small>
+                                </span>
+                                <i class="fa fa-check theme-picker-check" aria-hidden="true"></i>
+                            </button>
+                            <button class="dropdown-item theme-picker-option" type="button"
+                                    data-bs-theme-value="dark" aria-pressed="false">
+                                <i class="fa fa-moon-o theme-picker-option-icon" aria-hidden="true"></i>
+                                <span class="theme-picker-option-copy">
+                                    <strong>Dark</strong>
+                                    <small>Easy on the eyes</small>
+                                </span>
+                                <i class="fa fa-check theme-picker-check" aria-hidden="true"></i>
+                            </button>
+                            <button class="dropdown-item theme-picker-option" type="button"
+                                    data-bs-theme-value="auto" aria-pressed="false">
+                                <i class="fa fa-adjust theme-picker-option-icon" aria-hidden="true"></i>
+                                <span class="theme-picker-option-copy">
+                                    <strong>System</strong>
+                                    <small>Use device setting</small>
+                                </span>
+                                <i class="fa fa-check theme-picker-check" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% if current_user %}
                     <div class="dropdown d-none d-lg-block site-account">
                         <button class="nav-account dropdown-toggle d-flex align-items-center gap-2"
                                 type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -91,6 +212,7 @@
                 {% else %}
                     <a class="btn btn-outline-primary d-none d-lg-inline-flex site-sign-in" href="{{ url_for('main.login') }}">Sign in</a>
                 {% endif %}
+                </div>
             </div>
         </nav>
         {% endblock %}
